@@ -78,6 +78,10 @@ class Room extends BABYLON.Mesh {
     // let ground = BABYLON.Mesh.CreateGroundFromHeightMap(`${this.roomName}_terrain`,`map3/${this.roomName}.heightmap.png`,50,50,50,0,5,this.scene)
     
     let texture = new BABYLON.Texture(`map2/${this.roomName}.png`,this.scene)
+    texture.uScale = 0.98 //1.02
+    texture.vScale = 0.98 //1.02
+    texture.uOffset = 0.005
+    texture.vOffset = 0.015
     // let texture = new BABYLON.Texture(`final.png`,this.scene)
     // let x = (this.position.x/50) / 61
     // let y = (this.position.x/50) / 61

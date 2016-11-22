@@ -1,5 +1,6 @@
 let Game = require('./engine/Game')
-const ScreepsAPI = require('screeps-api')
+let Room = require('./engine/Room')
+const ScreepsAPI = require('./screepsapi')
 const auth = require('../auth')
 let api = new ScreepsAPI(auth)
 api.socket(() => {})
@@ -14,8 +15,15 @@ window.test = function test(username){
     .then((resp)=>(user=resp.body.user,api.req('GET',`/api/user/rooms?id=${user._id}`)))
     .then((resp)=>(rooms=resp.body.rooms))
     .then(()=>{
-      rooms.forEach(r=>api.subscribe(`rooms:${r}`))
+      rooms.forEach(r=>{
+        console.log('Subscribe',r)
+        window.subRoom(r) //api.subscribe(`room:${r}`)
+      })
     })
+}
+
+window.subRoom = function(room){
+  api.subscribe(`room:${room}`)
 }
 
 api.on('message', (msg) => {
@@ -25,15 +33,17 @@ api.on('message', (msg) => {
     // api.subscribe('room:E3N31')      
   }
 })
-
+// let log = (...a)=>console.log(...a)
 api.on('room', (msg) => {
+  // log(msg)
   let [event,room] = msg
   let [,roomName] = event.split(':')
   if(!GameRooms[roomName])
   {
+    console.log('Register room',roomName)
     GameRooms[roomName] = new Room(roomName,Game.scene)
-  }else{
   }
-  GameRooms[roomname].setData(room.objects)
+  console.log('Update room',roomName)
+  GameRooms[roomName].setData(room.objects)
   // console.log(JSON.stringify(msg, null, 3))
 })
